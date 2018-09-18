@@ -1,0 +1,108 @@
+﻿@page
+@model WellnessAppFrontEnd.Modals.UserExperience
+@{
+    ViewData["Title"] = "EditUserExperience";
+}
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <h2>Edit UserExperience User</h2>
+    <hr />
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<input type="submit" value="Update" onclick="saveUserExperience()" class="btn btn-default" />
+
+<input id="hiddenID" type="hidden" name="hiddenID" />
+
+@section Scripts {
+    <script type="text/javascript">
+        var queryString = "";
+        $(document).ready(function () {
+            debugger;
+            //var input = document.getElementById("hiddenID");
+
+            queryString = decodeURIComponent(window.location.search);
+            queryString = queryString.substring(1);
+
+            loadUserExperience(queryString);
+        });
+
+        function loadUserExperience(UserExperience) {
+            debugger;
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3308/userExperiences/userExperience/' + UserExperience,
+                //username: uName,
+                //password: passwrd,
+                success: function (data) {
+                    console.log(data);
+                    console.log(data['id']);
+                    //var UserExperienceRecord = JSON.parse(data);
+                    document.getElementById("Id").value = data['id'];  // multiple ways to implement object value
+
+                    document.getElementById("Comments").value = data.comments;
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                },
+            });
+        }
+
+        function saveUserExperience() {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            var newUserExperience = {
+                "id": $('#Id').val(),
+                "comments": $('#Comments').val(),
+            };
+
+            var data_json = JSON.stringify(newUserExperience);
+
+            $.ajax({
+                url: 'http://localhost:3308/userExperiences/userExperience/' + queryString,
+                type: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                //beforeSend: function (xhr) {
+                //    //xhr.setRequestHeader('Access-Control-Allow-origin', 'true');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With, Session');
+                //    //xhr.setRequestHeader('Access-Control-Request-Method', 'POST');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Methods', 'PUT, POST, GET, OPTIONS, DELETE');
+                //    //xhr.setRequestHeader('Content-type', 'application/json');
+                //},
+                //username: uName,
+                //password: passwrd,
+                data: data_json,
+                success: function (data) {
+                    window.location.href = "UserExperience";
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                },
+            });
+        }
+    </script>
+}

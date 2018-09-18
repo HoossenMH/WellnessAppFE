@@ -1,0 +1,123 @@
+﻿@page
+@{
+    ViewData["Title"] = "WeightLossExercise";
+}
+
+<h2>WeightLossExercise</h2>
+
+<table id="table" border="1">
+    <tr>
+        <th>Id</th>
+        <th>weightLossExercise_Name</th>
+        <th>weightLossExercise_Amount</th>
+        <th>weightLossExercise_Reps</th>
+        <th>weightLossExercise_Date</th>
+        <th>Actions</th>
+    </tr>
+</table>
+
+<br>
+
+Click <a asp-page="/WeightLossExercise/AddWeightLossExercise">here</a> to add a new weightLoss exercise.
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            table = document.getElementById("table");
+            var row = document.createElement("tr");
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3308/weightLossExercises/weightLossExercise/AllWeightLossExercise',
+                //username: uName,
+                //password: passwrd,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    for (var r = 0; r < data.length; r++) {
+                        row = document.createElement("tr");
+
+                        var x = data[r].id;
+                        addRow(x)
+
+                        x = data[r].weightLossExercise_Name;
+                        addRow(x)
+
+                        x = data[r].weightLossExercise_Amount;
+                        addRow(x)
+
+                        x = data[r].weightLossExercise_Reps;
+                        addRow(x)
+
+                        x = new Date(data[r].weightLossExercise_Date);
+                        addRow(x)
+
+                        var t = '<a onclick="deleteWeightLossExercise(' + data[r].id + ')">Delete</a>';
+                        var cell = document.createElement("td");
+                        cell.innerHTML = t;
+                        row.appendChild(cell);
+
+                        t = '<a onclick="editWeightLossExercise(' + data[r].id + ')">Edit</a>';
+                        var cell = document.createElement("td");
+                        cell.innerHTML = t;
+                        row.appendChild(cell);
+
+                        table.appendChild(row);
+                    }
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    //Error block
+                },
+            });
+
+            function addRow(x) {
+                var cell1 = document.createElement("td");
+                var textnode1 = document.createTextNode(x);
+                cell1.appendChild(textnode1);
+                row.appendChild(cell1);
+            }
+
+        });
+
+
+        function deleteWeightLossExercise(deleteRecord) {
+            debugger;
+
+            $.ajax({
+                type: 'DELETE',
+                url: 'http://localhost:3308/weightLossExercises/weightLossExercise/' + deleteRecord,
+                //username: uName,
+                //password: passwrd,
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    //Error block
+                },
+            });
+        }
+
+        function editWeightLossExercise(id) {
+            debugger;
+
+            //var value1 = "value1";
+            //var value2 = "value2";
+            var queryString = "?" + id;
+            window.location.href = "EditWeightLossExercise" + queryString;
+
+            //document.getElementById('hiddenID').value = id;
+            //window.location.href = "/WeightLossExercise/EditWeightLossExercise";
+        }
+    </script>
+}
