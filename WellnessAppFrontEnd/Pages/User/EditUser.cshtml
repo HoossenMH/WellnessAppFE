@@ -1,0 +1,131 @@
+﻿@page
+@model WellnessAppFrontEnd.Modals.User
+@{
+    ViewData["Title"] = "EditUser";
+}
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <h2>Edit User</h2>
+    <hr />
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Lastname, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<input type="submit" value="Update" onclick="saveUser()" class="btn btn-default" />
+
+<input id="hiddenID" type="hidden" name="hiddenID" />
+
+@section Scripts {
+    <script type="text/javascript">
+        var queryString = "";
+        $(document).ready(function () {
+            debugger;
+            //var input = document.getElementById("hiddenID");
+
+            queryString = decodeURIComponent(window.location.search);
+            queryString = queryString.substring(1);
+
+            loadUser(queryString);
+        });
+
+        function loadUser(User) {
+            debugger;
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3308/users/user/' + User,
+                //username: uName,
+                //password: passwrd,
+                success: function (data) {
+                    console.log(data);
+                    console.log(data['id']);
+                    //var UserRecord = JSON.parse(data);
+                    document.getElementById("Id").value = data['id'];  // multiple ways to implement object value
+
+                    document.getElementById("Firstname").value = data.firstname;
+
+                    document.getElementById('Lastname').value = data['lastname'];
+
+                    document.getElementById('Age').value = data.age;
+
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                },
+            });
+        }
+
+        function saveUser() {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            var newUser = {
+                "id": $('#Id').val(),
+                "firstname": $('#Firstname').val(),
+                "lastname": $('#Lastname').val(),
+                "age": $('#Age').val(),
+            };
+
+            var data_json = JSON.stringify(newUser);
+
+            $.ajax({
+                url: 'http://localhost:3308/users/user/' + queryString,
+                type: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                //beforeSend: function (xhr) {
+                //    //xhr.setRequestHeader('Access-Control-Allow-origin', 'true');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With, Session');
+                //    //xhr.setRequestHeader('Access-Control-Request-Method', 'POST');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Methods', 'PUT, POST, GET, OPTIONS, DELETE');
+                //    //xhr.setRequestHeader('Content-type', 'application/json');
+                //},
+                //username: uName,
+                //password: passwrd,
+                data: data_json,
+                success: function (data) {
+                    window.location.href = "User";
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                },
+            });
+        }
+    </script>
+}

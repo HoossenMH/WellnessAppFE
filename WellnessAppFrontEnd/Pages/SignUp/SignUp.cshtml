@@ -1,0 +1,132 @@
+﻿@page
+@model WellnessAppFrontEnd.Pages.SignUpModel
+@{
+    ViewData["Title"] = "SignUp";
+}
+
+<h2>SignUp</h2>
+
+<table id="table" border="1">
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Date of birth</th>
+        <th>SignUp Date</th>
+        <th>Actions</th>
+    </tr>
+</table>
+
+<br>
+
+Click <a asp-page="/SignUp/AddSignUp">here</a> to sign up a new user.
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            table = document.getElementById("table");
+            var row = document.createElement("tr");
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3308/signUps/signUp/AllSignUp',
+                //username: uName,
+                //password: passwrd,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    for (var r = 0; r < data.length; r++) {
+                        row = document.createElement("tr");
+
+                        var x = data[r].id;
+                        addRow(x)
+
+                        x = data[r].username;
+                        addRow(x)
+
+                        x = data[r].password;
+                        addRow(x)
+
+                        x = data[r].email;
+                        addRow(x)
+
+                        x = data[r].gender;
+                        addRow(x)
+
+                        x = data[r].dob;
+                        addRow(x)
+
+                        x = new Date(data[r].signUp_Date);
+                        addRow(x)
+
+                        var t = '<a onclick="deleteSignUp(' + data[r].id +')">Delete</a>';
+                        var cell = document.createElement("td");
+                        cell.innerHTML = t;
+                        row.appendChild(cell);
+
+                        t = '<a onclick="editSignUp(' + data[r].id + ')">Edit</a>';
+                        var cell = document.createElement("td");
+                        cell.innerHTML = t;
+                        row.appendChild(cell);
+
+                        table.appendChild(row);
+                    }
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    //Error block
+                },
+            });
+
+            function addRow(x) {
+                var cell1 = document.createElement("td");
+                var textnode1 = document.createTextNode(x);
+                cell1.appendChild(textnode1);
+                row.appendChild(cell1);
+            }
+
+        });
+
+
+        function deleteSignUp(deleteRecord) {
+            debugger;
+
+            $.ajax({
+                type: 'DELETE',
+                url: 'http://localhost:3308/signUps/signUp/' + deleteRecord,
+                //username: uName,
+                //password: passwrd,
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    //Error block
+                },
+            });
+        }
+
+        function editSignUp(id) {
+            debugger;
+
+            //var value1 = "value1";
+            //var value2 = "value2";
+            var queryString = "?" + id;
+            window.location.href = "EditSignUp" + queryString;
+
+            //document.getElementById('hiddenID').value = id;
+            //window.location.href = "/SignUp/EditSignUp";
+        }
+    </script>
+}

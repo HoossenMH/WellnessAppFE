@@ -1,0 +1,153 @@
+﻿@page
+@model WellnessAppFrontEnd.Modals.FitnessBio
+@{
+    ViewData["Title"] = "EditFitnessBio";
+}
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <h2>Edit FitnessBio User</h2>
+    <hr />
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Reasons, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Reasons, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Reasons, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Height, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Height, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Height, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BMI, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.BMI, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.BMI, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BloodPressure, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.BloodPressure, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.BloodPressure, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<input type="submit" value="Update" onclick="saveFitnessBio()" class="btn btn-default" />
+
+<input id="hiddenID" type="hidden" name="hiddenID" />
+
+@section Scripts {
+    <script type="text/javascript">
+        var queryString = "";
+        $(document).ready(function () {
+            debugger;
+            //var input = document.getElementById("hiddenID");
+
+            queryString = decodeURIComponent(window.location.search);
+            queryString = queryString.substring(1);
+
+            loadFitnessBio(queryString);
+        });
+
+        function loadFitnessBio(FitnessBio) {
+            debugger;
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3308/fitnessBios/fitnessBio/' + FitnessBio,
+                //username: uName,
+                //password: passwrd,
+                success: function (data) {
+                    console.log(data);
+                    console.log(data['id']);
+                    //var FitnessBioRecord = JSON.parse(data);
+                    document.getElementById("Id").value = data['id'];  // multiple ways to implement object value
+
+                    document.getElementById("Reasons").value = data.reasons;
+
+                    document.getElementById('Weight').value = data['weight'];
+
+                    document.getElementById('Height').value = data.height;
+
+                    document.getElementById('BMI').value = data.BMI;
+
+                    document.getElementById('BloodPressure').value = data.bloodPressure;
+
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                },
+            });
+        }
+
+        function saveFitnessBio() {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            var newFitnessBio = {
+                "id": $('#Id').val(),
+                "reasons": $('#Reasons').val(),
+                "weight": $('#Weight').val(),
+                "height": $('#Height').val(),
+                "BMI": $('#BMI').val(),
+                "bloodPressure": $('#BloodPressure').val(),
+            };
+
+            var data_json = JSON.stringify(newFitnessBio);
+
+            $.ajax({
+                url: 'http://localhost:3308/fitnessBios/fitnessBio/' + queryString,
+                type: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                //beforeSend: function (xhr) {
+                //    //xhr.setRequestHeader('Access-Control-Allow-origin', 'true');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With, Session');
+                //    //xhr.setRequestHeader('Access-Control-Request-Method', 'POST');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Methods', 'PUT, POST, GET, OPTIONS, DELETE');
+                //    //xhr.setRequestHeader('Content-type', 'application/json');
+                //},
+                //username: uName,
+                //password: passwrd,
+                data: data_json,
+                success: function (data) {
+                    window.location.href = "FitnessBio";
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                },
+            });
+        }
+    </script>
+}

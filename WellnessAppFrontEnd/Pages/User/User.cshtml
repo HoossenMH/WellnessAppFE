@@ -1,0 +1,124 @@
+﻿@page
+@model WellnessAppFrontEnd.Pages.User.UserModel
+@{
+    ViewData["Title"] = "User";
+}
+
+<h2>User</h2>
+
+<table id="table" border="1">
+    <tr>
+        <th>Id</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Age</th>
+        <th>Actions</th>
+    </tr>
+</table>
+
+<br>
+
+Click <a asp-page="/User/AddUser">here</a> to sign up a new user.
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            table = document.getElementById("table");
+            var row = document.createElement("tr");
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3308/users/user/AllUser',
+                //username: uName,
+                //password: passwrd,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    for (var r = 0; r < data.length; r++) {
+                        row = document.createElement("tr");
+
+                        var x = data[r].id;
+                        addRow(x)
+
+                        x = data[r].firstname;
+                        addRow(x)
+
+                        x = data[r].lastname;
+                        addRow(x)
+
+                        x = data[r].age;
+                        addRow(x)
+
+                        x = new Date(data[r].User_Date);
+                        addRow(x)
+
+                        var t = '<a onclick="deleteUser(' + data[r].id +')">Delete</a>';
+                        var cell = document.createElement("td");
+                        cell.innerHTML = t;
+                        row.appendChild(cell);
+
+                        t = '<a onclick="editUser(' + data[r].id + ')">Edit</a>';
+                        var cell = document.createElement("td");
+                        cell.innerHTML = t;
+                        row.appendChild(cell);
+
+                        table.appendChild(row);
+                    }
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    //Error block
+                },
+            });
+
+            function addRow(x) {
+                var cell1 = document.createElement("td");
+                var textnode1 = document.createTextNode(x);
+                cell1.appendChild(textnode1);
+                row.appendChild(cell1);
+            }
+
+        });
+
+
+        function deleteUser(deleteRecord) {
+            debugger;
+
+            $.ajax({
+                type: 'DELETE',
+                url: 'http://localhost:3308/users/user/' + deleteRecord,
+                //username: uName,
+                //password: passwrd,
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    //Error block
+                },
+            });
+        }
+
+        function editUser(id) {
+            debugger;
+
+            //var value1 = "value1";
+            //var value2 = "value2";
+            var queryString = "?" + id;
+            window.location.href = "EditUser" + queryString;
+
+            //document.getElementById('hiddenID').value = id;
+            //window.location.href = "/User/EditUser";
+        }
+    </script>
+}
+

@@ -1,0 +1,100 @@
+﻿@page
+@model WellnessAppFrontEnd.Modals.WeightLossExercise
+@{
+    ViewData["Title"] = "AddWeightLossExercise";
+}
+
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <h2>Add WeightLossExercise User</h2>
+    <hr />
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.WeightLossExercise_Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.WeightLossExercise_Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.WeightLossExercise_Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.WeightLossExercise_Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.WeightLossExercise_Amount, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.WeightLossExercise_Amount, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.WeightLossExercise_Reps, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.WeightLossExercise_Reps, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.WeightLossExercise_Reps, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<input type="submit" value="Add" onclick="saveWeightLossExercise()" class="btn btn-default" />
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            debugger;
+        });
+
+        function saveWeightLossExercise() {
+            debugger;
+
+            var uName = "user";
+            var passwrd = "password";
+
+            var newWeightLossExercise = {
+                "id": $('#Id').val(),
+                "weightLossExercise_Name": $('#WeightLossExercise_Name').val(),
+                "weightLossExercise_Amount": $('#WeightLossExercise_Amount').val(),
+                "weightLossExercise_Reps": $('#WeightLossExercise_Reps').val(),
+                "weightLossExercise_Date": Date.now(),
+            };
+
+            var data_json = JSON.stringify(newWeightLossExercise);
+
+            $.ajax({
+                url: 'http://localhost:3308/weightLossExercises/AddWeightLossExercise',
+                type: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Methods': 'PUT, POST, GET, OPTIONS, DELETE'
+                },
+                ContentType: 'application/json',
+                dataType: 'json',
+                //beforeSend: function (xhr) {
+                //    //xhr.setRequestHeader('Access-Control-Allow-origin', 'true');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With, Session');
+                //    //xhr.setRequestHeader('Access-Control-Request-Method', 'POST');
+                //    //xhr.setRequestHeader('Access-Control-Allow-Methods', 'PUT, POST, GET, OPTIONS, DELETE');
+                //    //xhr.setRequestHeader('Content-type', 'application/json');
+                //},
+                //username: uName,
+                //password: passwrd,
+                data: data_json,
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, throwError) {
+                    window.location.reload();
+                },
+            });
+        }
+    </script>
+}
